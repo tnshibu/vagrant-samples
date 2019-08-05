@@ -1,0 +1,28 @@
+Vagrant.configure("2") do |config|
+
+  config.vm.box = "ubuntu/trusty64"
+  config.vm.box_version = "8.0"
+
+  #------------------ Port forwarding - start -------------------------
+  config.vm.network :forwarded_port, guest: 22  , host: 2422, id: "ssh"
+  #------------------ Port forwarding - end ---------------------------
+
+  #----------------- Enable provisioning - start ----------------------
+  config.vm.provision "shell", inline: <<-SHELL
+    apt-get update
+    apt-get install -y default-jre
+    #apt-get install --install-recommends linux-generic-lts-xenial -y
+  SHELL
+  config.vm.provision :docker
+  config.vm.provision "ansible_local" do |ansible|
+    ansible.playbook = "playbook.yaml"
+  end
+  #----------------- Enable provisioning - end ------------------------
+  
+  machine.communicate.tap do |comm|
+    comm.sudo("apt-get update -qq -y")
+    comm.sudo("apt-get install -qq -y --force-yes curl apt-transport-https")
+    comm.sudo("apt-get purge -qq -y lxc-docker* || true")
+    comm.sudo("curl -sSL https://get.docker.com/ | sh")
+  end
+end

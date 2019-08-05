@@ -1,0 +1,4 @@
+ubuntu/xenial64 
+ubuntu/cosmic64 
+ubuntu/disco64 
+ubuntu/eoan64
