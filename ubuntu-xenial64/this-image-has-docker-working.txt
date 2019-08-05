@@ -1,0 +1,1 @@
+docker-working with vagrant provisioning  -- config.vm.provision :docker
